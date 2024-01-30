@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 5px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #333;
+      font-size: 24px;
+      text-align: center;
+      line-height: 100px;
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      background-color: #eee;
+    }
+  </style>
+  <title>Tic Tac Toe</title>
+</head>
+<body>
+  <div id="board"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const board = document.getElementById("board");
+      let currentPlayer = "X";
+      const cells = Array.from({ length: 9 }, (_, index) => createCell(index));
+
+      function createCell(index) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.addEventListener("click", () => handleCellClick(index));
+        board.appendChild(cell);
+        return cell;
+      }
+
+      function handleCellClick(index) {
+        if (!cells[index].textContent) {
+          cells[index].textContent = currentPlayer;
+          checkWinner();
+          currentPlayer = currentPlayer === "X" ? "O" : "X";
+        }
+      }
+
+      function checkWinner() {
+        const winPatterns = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        for (const pattern of winPatterns) {
+          const [a, b, c] = pattern;
+          if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+            alert(`Player ${cells[a].textContent} wins!`);
+            resetBoard();
+            return;
+          }
+        }
+
+        if (cells.every(cell => cell.textContent)) {
+          alert("It's a draw!");
+          resetBoard();
+        }
+      }
+
+      function resetBoard() {
+        cells.forEach(cell => {
+          cell.textContent = "";
+        });
+        currentPlayer = "X";
+      }
+    });
+  </script>
+</body>
+</html>
